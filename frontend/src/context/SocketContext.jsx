@@ -21,7 +21,7 @@ export const SocketContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (authUser) {
-      const socket = io('https://chat-app-rv.onrender.com', {
+      const socket = io('http://localhost:8000', {
         query: {
           userId: authUser._id
         }
@@ -40,17 +40,16 @@ export const SocketContextProvider = ({ children }) => {
       socket?.on('channelJoined', async channelId => {
         await getChannelConversations()
 
-        const { conversations, selectedConversation, setSelectedConversation } =
+        const { channelConversations, selectedConversation, setSelectedConversation } =
           useConversation.getState()
 
-        const conversation = conversations.find(con => con?._id === channelId)
+        const conversation = channelConversations.find(con => con?._id === channelId)
 
         if (
           selectedConversation &&
           selectedConversation?._id === channelId &&
           conversation
         ) {
-          console.log('Sending for selection: ', conversation)
           setSelectedConversation(conversation)
         }
       })
@@ -58,10 +57,10 @@ export const SocketContextProvider = ({ children }) => {
       socket?.on('channelLeaved', async channelId => {
         await getChannelConversations()
 
-        const { conversations, selectedConversation, setSelectedConversation } =
+        const { channelConversations, selectedConversation, setSelectedConversation } =
           useConversation.getState()
 
-        const conversation = conversations.find(con => con?._id === channelId)
+        const conversation = channelConversations.find(con => con?._id === channelId)
 
         if (
           selectedConversation &&

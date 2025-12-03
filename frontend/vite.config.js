@@ -11,7 +11,7 @@ export default defineConfig({
   server : {
     proxy : { 
       '/api' : {
-        target : 'https://chat-app-rv.onrender.com',
+        target : 'http://localhost:8000',
       }
     }
   }

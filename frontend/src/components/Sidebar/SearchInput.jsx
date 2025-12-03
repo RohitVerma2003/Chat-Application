@@ -11,8 +11,10 @@ const SearchInput = () => {
   const {pathname} = location;
 
   const [search, setSearch] = useState('')
-  const { setSelectedConversation } = useConversation()
-  const { conversations } = pathname.includes("channels")? useGetChannelConversations() : useGetConversations()
+  const { setSelectedConversation, userConversations , channelConversations } = useConversation()
+  const isChannel = pathname.includes("channels");
+
+  const list = isChannel ? channelConversations : userConversations
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -21,7 +23,7 @@ const SearchInput = () => {
     if (search.length < 3)
       return toast.error('Search term must be atleast 3 characters long')
 
-    const conversation = conversations.find(
+    const conversation = list.find(
       c =>
         c?.fullName?.toLowerCase().includes(search.toLowerCase()) ||
         c?.name?.toLowerCase().includes(search.toLowerCase())

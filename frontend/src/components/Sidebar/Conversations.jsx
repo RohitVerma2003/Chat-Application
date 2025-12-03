@@ -10,11 +10,13 @@ const Conversations = () => {
 
   const { pathname } = location
   const channelPage = pathname.includes('channels')
-  const { conversations } = useConversation()
+  const { channelConversations, userConversations } = useConversation()
 
   const { loading } = channelPage
     ? useGetChannelConversations()
     : useGetConversations()
+
+  const list = channelPage ? channelConversations : userConversations
   return (
     <div className='py-2 flex flex-col overflow-auto'>
       {channelPage && (
@@ -25,11 +27,11 @@ const Conversations = () => {
           Create New Channel
         </Link>
       )}
-      {conversations?.map((conversation, index) => (
+      {list?.map((conversation, index) => (
         <Conversation
           key={conversation._id}
           conversation={conversation}
-          lastIdx={index === conversations.length - 1}
+          lastIdx={index === list.length - 1}
         />
       ))}
       {loading ? <span className='loading loading-spinner'></span> : null}

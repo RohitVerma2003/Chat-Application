@@ -42,7 +42,7 @@ const Participant = ({ participant, isAdmin }) => {
 }
 
 const ChannelInfo = () => {
-  const { selectedConversation , conversations } = useConversation()
+  const { selectedConversation } = useConversation()
   const { authUser } = useAuthContext()
   const inGroup =
     selectedConversation &&

@@ -3,19 +3,22 @@ import { create } from "zustand";
 const useConversation = create((set, get) => ({
     selectedConversation: null,
     messages: [],
-    conversations: [],
+    userConversations: [],
+    channelConversations: [],
+
     setMessages: (messages) => set({ messages }),
     setSelectedConversation: (conversation) => {
         const current = get().selectedConversation;
-        if (current && conversation?._id !== current?._id) {
+        if (!current || conversation?._id !== current?._id) {
             set({ messages: [] });
         }
-        
+
         set({ selectedConversation: conversation });
     },
-    setConversations: (conversations) => {
-        set({ conversations })
-    }
+
+    setUserConversations: (list) => set({ userConversations: list }),
+    
+    setChannelConversations: (list) => set({ channelConversations: list }),
 }));
 
 export default useConversation;

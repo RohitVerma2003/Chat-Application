@@ -1,11 +1,10 @@
-import { get } from "mongoose";
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast";
 import useConversation from "../zustand/useConversation";
 
 const useGetConversations = () => {
     const [loading, setLoading] = useState(false);
-    const { setConversations } = useConversation()
+    const { setUserConversations } = useConversation()
 
     const getConversations = async () => {
         setLoading(true);
@@ -18,7 +17,7 @@ const useGetConversations = () => {
                 throw new Error(data.error);
             }
 
-            setConversations(data);
+            setUserConversations(data);
         } catch (error) {
             toast.error(error.message);
         } finally {

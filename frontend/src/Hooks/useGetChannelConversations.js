@@ -4,7 +4,7 @@ import useConversation from "../zustand/useConversation";
 
 const useGetChannelConversations = () => {
     const [loading, setLoading] = useState(false);
-    const {setConversations} = useConversation();
+    const {setChannelConversations} = useConversation();
 
     const getChannelConversations = async () => {
         setLoading(true);
@@ -17,7 +17,7 @@ const useGetChannelConversations = () => {
                 throw new Error(data.error);
             }
 
-            setConversations(data);
+            setChannelConversations(data);
         } catch (error) {
             toast.error(error.message);
         } finally {
