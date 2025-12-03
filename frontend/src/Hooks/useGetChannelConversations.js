@@ -1,16 +1,15 @@
-import { get } from "mongoose";
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast";
 
-const useGetConversations = () => {
+const useGetChannelConversations = () => {
     const [loading, setLoading] = useState(false);
     const [conversations, setConversations] = useState([]);
 
-    const getConversations = async () => {
+    const getChannelConversations = async () => {
         setLoading(true);
 
         try {
-            const res = await fetch("/api/users");
+            const res = await fetch("/api/channels");
             const data = await res.json();
 
             if (data.error) {
@@ -26,9 +25,9 @@ const useGetConversations = () => {
     }
 
     useEffect(() => {
-        getConversations();
+        getChannelConversations();
     }, [])
-    return { loading, conversations, getConversations };
+    return { loading, conversations, getChannelConversations };
 }
 
-export default useGetConversations
+export default useGetChannelConversations;
