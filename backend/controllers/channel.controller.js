@@ -24,6 +24,8 @@ export const createChannel = async (req, res) => {
         channel.participants.push(user?._id);
         await channel.save();
 
+        io.emit("channelCreated");
+
         return res.status(201).json(channel);
     } catch (error) {
         console.log("Error in creating channel", error.message);
@@ -52,6 +54,8 @@ export const joinChannel = async (req, res) => {
         channel.participants.push(userId);
         await channel.save();
 
+        io.emit("channelJoined" , channel._id);
+
         return res.status(200).json({ message: "Joined channel successfully", channel });
     } catch (error) {
         console.log("Error in joining channel", error.message);
@@ -77,6 +81,7 @@ export const leaveChannel = async (req, res) => {
         channel.participants = newParticipants;
 
         await channel.save();
+        io.emit("channelLeaved" , channel._id);
 
         return res.status(200).json({ message: "You leaved the channel successfully" });
     } catch (error) {

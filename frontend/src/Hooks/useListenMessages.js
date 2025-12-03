@@ -19,6 +19,7 @@ const useListenMessages = () => {
         return () => {
             socket?.off("newMessage");
             socket?.off("channelMessage");
+            socket?.off("channelCreated");
         }
     }, [socket, setMessages, messages]);
 }

@@ -22,9 +22,7 @@ const MessageContainer = () => {
   const handleJoin = async () => {
     try {
       await joinChannel(selectedConversation._id, authUser._id)
-      getChannelConversations()
-      setSelectedConversation(null)
-      window.location.reload();
+      getChannelConversations()      
     } catch (error) {
       console.error('Failed to join channel:', error)
     }
@@ -38,15 +36,15 @@ const MessageContainer = () => {
     if (selectedConversation && isChannel) {
       const participants = selectedConversation.participants || []
 
-      const filter = participants.filter(
+      const filter = participants.find(
         participant => participant.username === authUser.username
       )
       if (
-        filter.length > 0 ||
+        filter||
         selectedConversation?.createdBy?.username === authUser.username
       ) {
         setIsJoined(true)
-      }
+      }else setIsJoined(false);
     }
   }, [selectedConversation])
 

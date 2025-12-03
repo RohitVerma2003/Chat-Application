@@ -16,7 +16,9 @@ const Messages = () => {
     hasMore = false,
     getMessages
   } = pathname.includes('channels') ? useChannelGetMessages() : useGetMessages()
+
   useListenMessages()
+
   const lastMessageRef = useRef()
 
   useEffect(() => {

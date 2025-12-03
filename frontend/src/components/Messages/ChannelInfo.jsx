@@ -42,18 +42,17 @@ const Participant = ({ participant, isAdmin }) => {
 }
 
 const ChannelInfo = () => {
-  const { selectedConversation } = useConversation()
+  const { selectedConversation , conversations } = useConversation()
   const { authUser } = useAuthContext()
   const inGroup =
     selectedConversation &&
-    selectedConversation.participants.find(user => user?._id === authUser?._id)
+    selectedConversation?.participants?.find(user => user?._id === authUser?._id)
   const { loading, leaveChannel } = useLeaveChannel()
 
   const handleLeave = async () => {
     try {
       if (!selectedConversation) return
       const data = await leaveChannel(selectedConversation?._id, authUser?._id)
-      if (!data.error) window.location.reload()
     } catch (error) {
       console.log(error.message)
     }
@@ -66,8 +65,8 @@ const ChannelInfo = () => {
           <div className='avatar'>
             <div className='w-12 rounded-full'>
               <img
-                src={'https://api.dicebear.com/9.x/fun-emoji/svg'}
-                alt='user avatar'
+                src={selectedConversation?.profilePic || 'https://api.dicebear.com/9.x/fun-emoji/svg'}
+                alt='channel avatar'
               />
             </div>
           </div>
@@ -93,6 +92,7 @@ const ChannelInfo = () => {
               isAdmin={
                 selectedConversation?.createdBy?._id === participant?._id
               }
+              key={participant?._id}
             />
           ))}
         </div>

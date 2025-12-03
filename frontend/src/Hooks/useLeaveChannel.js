@@ -22,8 +22,9 @@ const useLeaveChannel = ()=>{
             if(data.error){
                 throw new Error(data.error);                
             }
-
+            
             toast.success(data.message);
+            return {message: "leaved the channel"}
         } catch (error) {
             toast.error(error.message);
             return {error: "Error in leaving"}

@@ -20,7 +20,6 @@ const useCreateChannel = () => {
             if(data.error) {
                 throw new Error(data.error);
             }
-            console.log(data);
 
             toast.success("New Channel Created");
         } catch (error) {

@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuthContext } from './AuthContext'
 import io from 'socket.io-client'
 import { set } from 'mongoose'
+import useGetChannelConversations from '../Hooks/useGetChannelConversations'
+import useConversation from '../zustand/useConversation'
 
 const SocketContext = createContext()
 
@@ -14,6 +16,8 @@ export const SocketContextProvider = ({ children }) => {
   const [currentChannel, setCurrentChannel] = useState(null)
   const [onlineUsers, setOnlineUsers] = useState([])
   const { authUser } = useAuthContext()
+  const { getChannelConversations } =
+    useGetChannelConversations()
 
   useEffect(() => {
     if (authUser) {
@@ -27,6 +31,45 @@ export const SocketContextProvider = ({ children }) => {
 
       socket.on('getOnlineUsers', users => {
         setOnlineUsers(users)
+      })
+
+      socket?.on('channelCreated', () => {
+        getChannelConversations()
+      })
+
+      socket?.on('channelJoined', async channelId => {
+        await getChannelConversations()
+
+        const { conversations, selectedConversation, setSelectedConversation } =
+          useConversation.getState()
+
+        const conversation = conversations.find(con => con?._id === channelId)
+
+        if (
+          selectedConversation &&
+          selectedConversation?._id === channelId &&
+          conversation
+        ) {
+          console.log('Sending for selection: ', conversation)
+          setSelectedConversation(conversation)
+        }
+      })
+
+      socket?.on('channelLeaved', async channelId => {
+        await getChannelConversations()
+
+        const { conversations, selectedConversation, setSelectedConversation } =
+          useConversation.getState()
+
+        const conversation = conversations.find(con => con?._id === channelId)
+
+        if (
+          selectedConversation &&
+          selectedConversation?._id === channelId &&
+          conversation
+        ) {
+          setSelectedConversation(conversation)
+        }
       })
 
       return () => socket.close()
