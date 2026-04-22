@@ -28,9 +28,10 @@ This application lets you chat with your friends on real time using socktes. Bui
 - Channel message pagination
 - Admin restrictions (admin cannot leave own channel)
 
-### 4. Online Users Tracking
+### 4. Online Users Tracking and Typing Indicator 
 - Live list of online members using socket room connections
 - Green status indicator on active users
+- Typing Indicators using redis pub-sub
 
 ### 5. 🔔 Live Events
 - New message real-time updates
@@ -49,7 +50,7 @@ This application lets you chat with your friends on real time using socktes. Bui
 
 - **Frontend**: Vite + React
 - **Backend**: Node.js
-- **Database**: MongoDB
+- **Database**: MongoDB , Redis
 - **State Management**: React Zustand and Hooks
 - **Styling**: Tailwind CSS
 
