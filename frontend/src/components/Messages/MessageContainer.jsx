@@ -7,10 +7,12 @@ import { useAuthContext } from '../../context/AuthContext'
 import { useLocation } from 'react-router-dom'
 import useJoinChannel from '../../Hooks/useJoinChannel'
 import useGetChannelConversations from '../../Hooks/useGetChannelConversations'
+import { useSocketContext } from '../../context/SocketContext'
 
 const MessageContainer = () => {
   const { selectedConversation, setSelectedConversation } = useConversation()
   const { getChannelConversations } = useGetChannelConversations()
+  const { typingUsers } = useSocketContext()
   const { joinChannel } = useJoinChannel()
   const { authUser } = useAuthContext()
   const location = useLocation()
@@ -22,7 +24,7 @@ const MessageContainer = () => {
   const handleJoin = async () => {
     try {
       await joinChannel(selectedConversation._id, authUser._id)
-      getChannelConversations()      
+      getChannelConversations()
     } catch (error) {
       console.error('Failed to join channel:', error)
     }
@@ -40,13 +42,15 @@ const MessageContainer = () => {
         participant => participant.username === authUser.username
       )
       if (
-        filter||
+        filter ||
         selectedConversation?.createdBy?.username === authUser.username
       ) {
         setIsJoined(true)
-      }else setIsJoined(false);
+      } else setIsJoined(false)
     }
   }, [selectedConversation])
+
+  console.log(typingUsers)
 
   return (
     <div className='md:min-w-[450px] flex flex-col border-r border-slate-500 p-4'>
@@ -57,8 +61,11 @@ const MessageContainer = () => {
           <div className='bg-slate-500 px-4 py-2 mb-2'>
             <span className='label-text'>To:</span>{' '}
             <span className='text-gray-900 font-bold'>
-              {selectedConversation?.fullName || selectedConversation?.name}
+              {selectedConversation?.fullName || selectedConversation?.name}{" "}
             </span>
+            {typingUsers?.has(selectedConversation?._id) && (
+              <span className='text-gray-900 font-bold text-xs'>Typing...</span>
+            )}
           </div>
 
           <Messages />

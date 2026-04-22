@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuthContext } from './AuthContext'
 import io from 'socket.io-client'
-import { set } from 'mongoose'
 import useGetChannelConversations from '../Hooks/useGetChannelConversations'
 import useConversation from '../zustand/useConversation'
 
@@ -16,12 +15,12 @@ export const SocketContextProvider = ({ children }) => {
   const [currentChannel, setCurrentChannel] = useState(null)
   const [onlineUsers, setOnlineUsers] = useState([])
   const { authUser } = useAuthContext()
-  const { getChannelConversations } =
-    useGetChannelConversations()
+  const { getChannelConversations } = useGetChannelConversations();
+  const [typingUsers , setTypingUsers] = useState(new Set());
 
   useEffect(() => {
     if (authUser) {
-      const socket = io('https://chat-app-rv.onrender.com', {
+      const socket = io('http://localhost:8000/', {
         query: {
           userId: authUser._id
         }
@@ -71,6 +70,20 @@ export const SocketContextProvider = ({ children }) => {
         }
       })
 
+      socket?.on('typing' , ({fromUserId})=>{
+        setTypingUsers((prev)=> new Set(prev).add(fromUserId));
+        console.log("Typing -> " , fromUserId);
+      })
+
+      socket?.on('stop_typing' , ({fromUserId})=>{
+        setTypingUsers((prev)=> {
+          const newSet = new Set(prev);
+          newSet.delete(fromUserId);
+          return newSet;
+        });
+        console.log("Typing Stopped -> " , fromUserId);
+      })
+
       return () => socket.close()
     } else {
       if (socket) {
@@ -93,7 +106,7 @@ export const SocketContextProvider = ({ children }) => {
 
   return (
     <SocketContext.Provider
-      value={{ socket, onlineUsers, joinChannel, currentChannel }}
+      value={{ socket, onlineUsers, joinChannel, currentChannel,typingUsers }}
     >
       {children}
     </SocketContext.Provider>
